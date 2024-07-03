@@ -1,0 +1,131 @@
+[gd_scene load_steps=9 format=3 uid="uid://cdskhqx0yoyrd"]
+
+[ext_resource type="Texture2D" uid="uid://opjuv1tcvfik" path="res://parallax-space-backgound.png" id="1"]
+[ext_resource type="PackedScene" uid="uid://b126mcxafunll" path="res://Star.tscn" id="2"]
+[ext_resource type="Script" path="res://Game.gd" id="3"]
+[ext_resource type="PackedScene" uid="uid://biktus3g67atr" path="res://Planet.tscn" id="4"]
+
+[sub_resource type="CircleShape2D" id="5"]
+radius = 50.0
+
+[sub_resource type="CircleShape2D" id="3"]
+radius = 500.0
+
+[sub_resource type="CircleShape2D" id="4"]
+radius = 500.0
+
+[sub_resource type="CircleShape2D" id="6"]
+radius = 500.0
+
+[node name="Game" type="Node2D"]
+script = ExtResource("3")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 399)
+zoom = Vector2(0.2, 0.2)
+
+[node name="Space" type="Sprite2D" parent="Camera2D"]
+self_modulate = Color(1, 1, 1, 0.121569)
+position = Vector2(251.714, 967.649)
+scale = Vector2(250, 250)
+texture = ExtResource("1")
+
+[node name="Star" parent="." instance=ExtResource("2")]
+position = Vector2(551, 482)
+
+[node name="Planet" parent="." instance=ExtResource("4")]
+position = Vector2(551, -18)
+mass = 1.0
+
+[node name="Area2DEmitter" type="Area2D" parent="."]
+position = Vector2(-449, -18)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2DEmitter"]
+shape = SubResource("5")
+
+[node name="Area2DVelocDamp" type="Area2D" parent="."]
+modulate = Color(0.333333, 0.145098, 0.32549, 1)
+position = Vector2(-1965, 1849)
+gravity_point_center = Vector2(0, 0)
+gravity_direction = Vector2(0, 0)
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2DVelocDamp"]
+shape = SubResource("3")
+
+[node name="Area2DVelocBump" type="Area2D" parent="."]
+modulate = Color(0.341176, 1, 0.00784314, 1)
+position = Vector2(594.5, 1861)
+gravity_point_center = Vector2(0, 0)
+gravity_direction = Vector2(0, 0)
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2DVelocBump"]
+shape = SubResource("4")
+
+[node name="Area2DVoid" type="Area2D" parent="."]
+modulate = Color(0, 0, 0, 1)
+position = Vector2(619, 6203)
+gravity_point_center = Vector2(0, 0)
+gravity_direction = Vector2(0, 0)
+gravity = 0.0
+linear_damp = 0.0
+angular_damp = 0.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2DVoid"]
+shape = SubResource("6")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="labelTotalDelta" type="Label" parent="CanvasLayer"]
+offset_left = 92.0
+offset_top = 10.0
+offset_right = 157.0
+offset_bottom = 24.0
+text = "TotalDelta"
+
+[node name="labelTimeScale" type="Label" parent="CanvasLayer"]
+offset_left = 15.0
+offset_top = 10.0
+offset_right = 80.0
+offset_bottom = 24.0
+text = "TimeScale"
+
+[node name="LogPanel" type="Panel" parent="CanvasLayer"]
+modulate = Color(1, 1, 1, 0.686275)
+offset_left = 791.0
+offset_top = 109.0
+offset_right = 1115.0
+offset_bottom = 757.0
+
+[node name="labelLog" type="Label" parent="CanvasLayer/LogPanel"]
+layout_mode = 0
+offset_top = 16.0
+offset_right = 324.0
+offset_bottom = 642.0
+theme_override_font_sizes/font_size = 10
+text = "Log
+"
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer"]
+offset_right = 1143.0
+offset_bottom = 73.0
+mouse_force_pass_scroll_events = false
+max_value = 8.0
+step = 0.25
+value = 1.0
+tick_count = 33
+ticks_on_borders = true
+
+[connection signal="draw" from="." to="." method="_on_Game_draw"]
+[connection signal="body_entered" from="Area2DVelocDamp" to="." method="_on_Area2DVelocDamp_body_entered"]
+[connection signal="body_exited" from="Area2DVelocDamp" to="." method="_on_Area2DVelocDamp_body_exited"]
+[connection signal="body_entered" from="Area2DVelocBump" to="." method="_on_Area2DVelocBump_body_entered"]
+[connection signal="body_exited" from="Area2DVelocBump" to="." method="_on_Area2DVelocBump_body_exited"]
+[connection signal="body_entered" from="Area2DVoid" to="." method="_on_Area2DVoid_body_entered"]
+[connection signal="body_exited" from="Area2DVoid" to="." method="_on_Area2DVoid_body_exited"]
+[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_HSlider_value_changed"]
